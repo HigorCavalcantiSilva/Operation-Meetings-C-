@@ -61,23 +61,6 @@ namespace OperationMettings
             }
         }
 
-        private void InitializeObsStudio()
-        {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WorkingDirectory = Environment.GetEnvironmentVariable("PATH_OBS");
-            startInfo.FileName = $"{startInfo.WorkingDirectory}{Environment.GetEnvironmentVariable("EXECUTABLE_OBS")}";
-
-            OpenProcess(panel1, startInfo);
-        }
-
-        private void InitializeJWLibrary()
-        {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.FileName = $"shell:appsFolder\\{Environment.GetEnvironmentVariable("PATH_JW")}!App";
-
-            OpenProcessJW(startInfo);
-        }
-
         private void InitializeOnlyT()
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
@@ -147,32 +130,14 @@ namespace OperationMettings
             }));
         }
 
-        private void OpenProcessJW(ProcessStartInfo startInfo)
-        {
-            IntPtr handle;
-            Process process = Process.Start(startInfo);
-
-            Thread.Sleep(4000);
-            handle = FindWindow(null, "JW Library");
-
-            Invoke((MethodInvoker)(() =>
-            {
-                MoveWindow(handle, Screen.PrimaryScreen.Bounds.Width - 375, 0, 300, 768, true);
-
-                handleList.Add(handle);
-            }));
-        }
-
         private async void Main_Shown(object sender, EventArgs e)
         {
             // Executar os métodos simultaneamente usando Task.Run para cada método.
             Task task1 = Task.Run(() => InitializeOnlyT());
-            Task task2 = Task.Run(() => InitializeObsStudio());
-            Task task3 = Task.Run(() => InitializeZoom());
-            Task task4 = Task.Run(() => InitializeJWLibrary());
+            Task task2 = Task.Run(() => InitializeZoom());
 
             // Aguarda todos os métodos terminarem.
-            await Task.WhenAll(task1, task2, task3, task4);
+            await Task.WhenAll(task1, task2);
         }
     }
 }
