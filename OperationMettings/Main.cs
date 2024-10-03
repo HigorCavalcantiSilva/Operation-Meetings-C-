@@ -4,8 +4,9 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Threading;
-using System.Threading.Tasks;
 using dotenv.net;
+using DotNetEnv;
+using Microsoft.Win32;
 
 namespace OperationMettings
 {
@@ -59,15 +60,6 @@ namespace OperationMettings
                     // Se cair aqui é porque o processo foi encerrado manualmente
                 }
             }
-        }
-
-        private void InitializeOnlyT()
-        {
-            ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WorkingDirectory = Environment.GetEnvironmentVariable("PATH_ONLYT");
-            startInfo.FileName = $"{startInfo.WorkingDirectory}{Environment.GetEnvironmentVariable("EXECUTABLE_ONLYT")}";
-
-            OpenProcess(panel4, startInfo);
         }
 
         private void InitializeZoom()
@@ -130,14 +122,19 @@ namespace OperationMettings
             }));
         }
 
-        private async void Main_Shown(object sender, EventArgs e)
+        private void Main_Shown(object sender, EventArgs e)
         {
-            // Executar os métodos simultaneamente usando Task.Run para cada método.
-            Task task1 = Task.Run(() => InitializeOnlyT());
-            Task task2 = Task.Run(() => InitializeZoom());
+            // Obter o nome do executável do aplicativo atual
+            string appName = System.IO.Path.GetFileName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
 
-            // Aguarda todos os métodos terminarem.
-            await Task.WhenAll(task1, task2);
+            // Configurar as chaves de emulação do navegador para usar IE11
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey($@"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION"))
+            {
+                key.SetValue(appName, (uint)11000, RegistryValueKind.DWord);
+            }
+
+            webBrowser1.Navigate("http://192.168.100.102:8096/Index");
+            InitializeZoom();
         }
     }
 }

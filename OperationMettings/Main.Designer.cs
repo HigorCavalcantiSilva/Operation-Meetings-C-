@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.panel3 = new System.Windows.Forms.Panel();
-            this.panel4 = new System.Windows.Forms.Panel();
+            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.SuspendLayout();
             // 
             // panel3
@@ -41,27 +41,27 @@
             this.panel3.Size = new System.Drawing.Size(1326, 555);
             this.panel3.TabIndex = 1;
             // 
-            // panel4
+            // webBrowser1
             // 
-            this.panel4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel4.Location = new System.Drawing.Point(1126, 12);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(212, 144);
-            this.panel4.TabIndex = 1;
+            this.webBrowser1.Location = new System.Drawing.Point(1100, 7);
+            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser1.Name = "webBrowser1";
+            this.webBrowser1.ScrollBarsEnabled = false;
+            this.webBrowser1.Size = new System.Drawing.Size(237, 146);
+            this.webBrowser1.TabIndex = 2;
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(1350, 736);
-            this.Controls.Add(this.panel4);
+            this.ClientSize = new System.Drawing.Size(1350, 729);
+            this.Controls.Add(this.webBrowser1);
             this.Controls.Add(this.panel3);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(1366, 775);
-            this.MinimumSize = new System.Drawing.Size(1366, 766);
+            this.MaximumSize = new System.Drawing.Size(1366, 768);
+            this.MinimumSize = new System.Drawing.Size(1366, 768);
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Mettings Operation";
@@ -74,7 +74,7 @@
 
         #endregion
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.WebBrowser webBrowser1;
     }
 }
 
