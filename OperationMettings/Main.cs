@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Threading;
 using dotenv.net;
-using DotNetEnv;
 using Microsoft.Win32;
 
 namespace OperationMettings
@@ -133,7 +132,7 @@ namespace OperationMettings
                 key.SetValue(appName, (uint)11000, RegistryValueKind.DWord);
             }
 
-            webBrowser1.Navigate("http://192.168.100.102:8096/Index");
+            webBrowser1.Navigate($"http://{Environment.GetEnvironmentVariable("IP_ONLYT")}:8096/Index");
             InitializeZoom();
         }
     }
