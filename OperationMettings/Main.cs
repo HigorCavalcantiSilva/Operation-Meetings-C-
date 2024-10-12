@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Threading;
 using dotenv.net;
 using Microsoft.Win32;
+using System.Threading.Tasks;
 
 namespace OperationMettings
 {
@@ -61,7 +62,7 @@ namespace OperationMettings
             }
         }
 
-        private void InitializeZoom()
+        private async void InitializeZoom()
         {
             string meetingId = Environment.GetEnvironmentVariable("MEETING_ID");
             string password = Environment.GetEnvironmentVariable("PASSWORD");
@@ -71,12 +72,16 @@ namespace OperationMettings
             process.StartInfo.Arguments = $"--url=zoommtg://zoom.us/join?confno={meetingId}&pwd={password}";
             process.Start();
 
-            IntPtr handle = FindWindow(null, "Zoom Reunião");
-            while (handle == IntPtr.Zero)
+            IntPtr handle = await Task.Run(() =>
             {
-                Thread.Sleep(1000);
-                handle = FindWindow(null, "Zoom Reunião");
-            }
+                IntPtr zoomHandle = FindWindow(null, "Zoom Reunião");
+                while (zoomHandle == IntPtr.Zero)
+                {
+                    Thread.Sleep(1000);
+                    zoomHandle = FindWindow(null, "Zoom Reunião");
+                }
+                return zoomHandle;
+            });
 
             Invoke((MethodInvoker)(() =>
             {
@@ -93,47 +98,15 @@ namespace OperationMettings
             }));
         }
 
-        private void OpenProcess(Panel panel, ProcessStartInfo startInfo)
-        {
-            Process process = Process.Start(startInfo);
-            IntPtr handle;
-
-            handle = process.MainWindowHandle;
-
-            while (handle == IntPtr.Zero)
-            {
-                Thread.Sleep(1000);    
-                handle = process.MainWindowHandle;
-            }
-
-            Invoke((MethodInvoker)(() =>
-            {
-                int style = GetWindowLong(handle, GWL_STYLE);
-                SetWindowLong(handle, GWL_STYLE, style & ~WS_CAPTION & ~WS_THICKFRAME);
-
-                SetParent(handle, panel.Handle);
-
-                MoveWindow(handle, 0, 0, panel.Width, panel.Height, true);
-
-                ShowWindow(handle, 5);
-
-                handleList.Add(handle);
-            }));
-        }
-
         private void Main_Shown(object sender, EventArgs e)
         {
-            // Obter o nome do executável do aplicativo atual
-            string appName = System.IO.Path.GetFileName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
-
-            // Configurar as chaves de emulação do navegador para usar IE11
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey($@"Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION"))
-            {
-                key.SetValue(appName, (uint)11000, RegistryValueKind.DWord);
-            }
-
-            webBrowser1.Navigate($"http://{Environment.GetEnvironmentVariable("IP_ONLYT")}:8096/Index");
+            webView21.Source = new Uri($"http://{Environment.GetEnvironmentVariable("IP_ONLYT")}:8096/Index");
             InitializeZoom();
+        }
+
+        private void webView21_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+        {
+            webView21.ExecuteScriptAsync("document.querySelector('.link_container').style.display = 'none';");
         }
     }
 }
